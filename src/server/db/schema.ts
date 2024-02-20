@@ -4,7 +4,7 @@
 import { sql } from "drizzle-orm";
 import {
   index,
-  pgTableCreator,
+  pgTable,
   serial,
   timestamp,
   varchar,
@@ -16,9 +16,8 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `sharpie_${name}`);
 
-export const posts = createTable(
+export const posts = pgTable(
   "post",
   {
     id: serial("id").primaryKey(),
@@ -30,5 +29,5 @@ export const posts = createTable(
   },
   (example) => ({
     nameIndex: index("name_idx").on(example.name),
-  })
+  }),
 );
