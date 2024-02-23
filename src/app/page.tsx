@@ -32,10 +32,10 @@ export default async function Home() {
             Go Pricing
           </Link>
           <Link
-            href="/pricing"
+            href="/login"
             className={buttonVariants({ size: "lg", variant: "outline" })}
           >
-            Sign in
+            Login
           </Link>
         </div>
       </div>

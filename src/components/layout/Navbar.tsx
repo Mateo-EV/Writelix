@@ -7,8 +7,8 @@ export const Navbar = () => {
   const user = false;
 
   return (
-    <header className="sticky top-0 flex w-full justify-center border-b border-gray-200 bg-background/60 backdrop-blur-xl dark:border-gray-700">
-      <div className="container flex h-16 items-center justify-between py-4">
+    <header className="sticky top-0 flex h-16 w-full justify-center border-b border-gray-200 bg-background/60 backdrop-blur-xl dark:border-gray-700">
+      <div className="container flex items-center justify-between py-4">
         <div className="flex gap-6 md:gap-10">
           <Link
             href="/"
@@ -20,7 +20,7 @@ export const Navbar = () => {
         </div>
         {user ? null : (
           <Link href="/login" className={buttonVariants()}>
-            Sign in
+            Login
           </Link>
         )}
       </div>

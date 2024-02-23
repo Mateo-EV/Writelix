@@ -1,9 +1,6 @@
-import {
-  loginUserSchema,
-  registerUserSchema,
-  type loginUserSchemaType,
-  type registerUserSchemaType,
-} from "@/schemas";
+"use client";
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Form,
   FormControl,
@@ -13,16 +10,28 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  loginUserSchema,
+  registerUserSchema,
+  type loginUserSchemaType,
+  type registerUserSchemaType,
+} from "@/schemas";
 import { api } from "@/trpc/react";
 
-import { usePathname, useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { ButtonWithLoading } from "./ui/button";
 import { useForm } from "@/hooks/useForm";
+import { AlertCircle } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import { ButtonWithLoading } from "../ui/button";
 
-export const AuthForm = () => {
-  const isRegisterPage = usePathname() === "/register";
+type CredentiaslFormProps = {
+  isRegisterPage: boolean;
+};
+
+export const CredentialsForm = ({ isRegisterPage }: CredentiaslFormProps) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlError = searchParams.get("error") === "OAuthAccountNotLinked";
 
   const form = useForm<loginUserSchemaType | registerUserSchemaType>({
     schema: isRegisterPage ? registerUserSchema : loginUserSchema,
@@ -39,8 +48,8 @@ export const AuthForm = () => {
       router.push("/dashboard");
       router.refresh();
     },
-    onError: () => {
-      toast.error("Failed to login");
+    onError: (err) => {
+      toast.error(err.message);
     },
   });
   const { mutateAsync: register } = api.auth.register.useMutation({
@@ -63,11 +72,20 @@ export const AuthForm = () => {
         password: values.password,
       });
   };
-
   return (
     <Form {...form}>
-      <form className="order-2" onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-4">
+          {urlError && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+
+              <AlertTitle>Account Not Linked</AlertTitle>
+              <AlertDescription>
+                <p>Email already in use by another account</p>
+              </AlertDescription>
+            </Alert>
+          )}
           {isRegisterPage && (
             <FormField
               control={form.control}
@@ -76,12 +94,7 @@ export const AuthForm = () => {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <FormInput
-                      placeholder="Matthew"
-                      type="Name"
-                      className="border-gray-200 bg-white"
-                      {...field}
-                    />
+                    <FormInput placeholder="Matthew" type="text" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -98,7 +111,6 @@ export const AuthForm = () => {
                   <FormInput
                     placeholder="name@example.com"
                     type="email"
-                    className="border-gray-200 bg-white"
                     {...field}
                   />
                 </FormControl>
@@ -115,7 +127,6 @@ export const AuthForm = () => {
                 <FormControl>
                   <FormInput
                     placeholder="**********"
-                    className="border-gray-200 bg-white"
                     type="password"
                     {...field}
                   />

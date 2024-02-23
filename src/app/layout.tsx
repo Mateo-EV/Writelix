@@ -2,8 +2,9 @@ import "@/app/globals.css";
 
 import { Poppins } from "next/font/google";
 
-import { TRPCReactProvider } from "@/trpc/react";
 import { Navbar } from "@/components/layout/Navbar";
+import { Toaster } from "@/components/ui/sonner";
+import { TRPCReactProvider } from "@/trpc/react";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -19,14 +20,20 @@ export const metadata = {
 
 export default function RootLayout({
   children,
+  // authModal,
 }: {
   children: React.ReactNode;
+  // authModal: React.ReactNode;
 }) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} font-poppins dark`}>
+      <body className={`${poppins.variable} font-poppins`}>
         <Navbar />
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          {/* {authModal} */}
+          {children}
+        </TRPCReactProvider>
+        <Toaster />
       </body>
     </html>
   );

@@ -1,4 +1,4 @@
-import { AuthForm } from "@/components/AuthForm";
+import UserAuthForm from "@/components/auth/UserAuthForm";
 
 export default function AuthLayout({
   children,
@@ -6,11 +6,9 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="container grid place-items-center">
-      <div className="mx-auto flex w-full flex-col justify-center gap-6 sm:w-[350px]">
-        <AuthForm />
-        {children}
-      </div>
+    <div className="container grid h-[calc(100vh-4rem)] place-items-center">
+      <UserAuthForm />
+      {children}
     </div>
   );
 }
