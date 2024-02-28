@@ -20,6 +20,7 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_SECRET_ID: z.string(),
     AUTH_SECRET: z.string(),
+    RESEND_API_KEY: z.string(),
   },
 
   /**
@@ -41,6 +42,7 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_SECRET_ID: process.env.GOOGLE_SECRET_ID,
     AUTH_SECRET: process.env.AUTH_SECRET,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

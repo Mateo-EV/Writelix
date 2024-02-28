@@ -7,7 +7,7 @@ export default function NotFound() {
   const router = useRouter();
 
   return (
-    <div className="-translatpene-y-1/2 absolute left-1/2 top-1/2 mb-16 -translate-x-1/2 items-center justify-center text-center">
+    <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center text-center">
       <span className="bg-gradient-to-b from-foreground to-transparent bg-clip-text text-[10rem] font-extrabold leading-none text-transparent">
         404
       </span>

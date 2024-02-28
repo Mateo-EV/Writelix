@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { CredentialsForm } from "./CredentialsForm";
 import { AuthProviders } from "./AuthProviders";
 import Link from "next/link";
+import { buttonVariants } from "../ui/button";
 
 const UserAuthForm = () => {
   const isRegisterPage = usePathname() === "/register";
@@ -26,7 +27,11 @@ const UserAuthForm = () => {
       <p className="px-8 text-center text-sm text-muted-foreground">
         <Link
           href={isRegisterPage ? "/login" : "/register"}
-          className="hover:text-brand underline underline-offset-4"
+          className={buttonVariants({
+            variant: "link",
+            size: "sm",
+            className: "h-auto",
+          })}
         >
           {isRegisterPage
             ? "Already have an account? Log in"

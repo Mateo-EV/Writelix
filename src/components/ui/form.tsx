@@ -181,7 +181,46 @@ const FormInput = React.forwardRef<HTMLInputElement, InputProps>(
 );
 FormInput.displayName = "FormInput";
 
+const FormController = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
+  render,
+  label,
+  inputProps: { type = "text", autoComplete = "off", ...moreInputProps },
+  ...props
+}: Omit<ControllerProps<TFieldValues, TName>, "render"> & {
+  render?: ControllerProps<TFieldValues, TName>["render"];
+  label: string;
+  inputProps: React.ComponentPropsWithRef<"input">;
+}) => {
+  return (
+    <FormField
+      {...props}
+      render={
+        render
+          ? render
+          : ({ field }) => (
+              <FormItem>
+                <FormLabel>{label}</FormLabel>
+                <FormControl>
+                  <FormInput
+                    type={type}
+                    autoComplete={autoComplete}
+                    {...moreInputProps}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )
+      }
+    />
+  );
+};
+
 export {
+  FormController,
   useFormField,
   Form,
   FormItem,

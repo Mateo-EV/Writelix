@@ -6,13 +6,24 @@ export default auth((req) => {
   const isLoggedIn = !!req.auth;
 
   const isProtectedRoute = nextUrl.pathname.startsWith("/dashboard");
-  const isAuthRoutes = ["/login", "/register"].includes(nextUrl.pathname);
+  const isAuthRoutes = [
+    "/login",
+    "/register",
+    "/new-verification",
+    "/reset-password",
+  ].includes(nextUrl.pathname);
+  const isApiAuthRoutes = nextUrl.pathname.startsWith("/api/trpc/auth");
 
-  if (isAuthRoutes) {
-    if (isLoggedIn)
-      return NextResponse.redirect(new URL("/dashboard", nextUrl));
-    return NextResponse.next();
-  }
+  if (isAuthRoutes && isLoggedIn)
+    return NextResponse.redirect(new URL("/dashboard", nextUrl));
+
+  if (isApiAuthRoutes && isLoggedIn)
+    return NextResponse.json(
+      {
+        message: "FORBIDDEN",
+      },
+      { status: 403 },
+    );
 
   if (!isLoggedIn && isProtectedRoute)
     return NextResponse.redirect(new URL("/login", nextUrl));

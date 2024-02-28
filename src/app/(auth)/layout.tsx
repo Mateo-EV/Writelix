@@ -1,5 +1,3 @@
-import UserAuthForm from "@/components/auth/UserAuthForm";
-
 export default function AuthLayout({
   children,
 }: {
@@ -7,7 +5,6 @@ export default function AuthLayout({
 }) {
   return (
     <div className="container grid h-[calc(100vh-4rem)] place-items-center">
-      <UserAuthForm />
       {children}
     </div>
   );

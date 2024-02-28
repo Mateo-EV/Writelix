@@ -6,7 +6,7 @@ export default async function Home() {
     <section className="space-y-6 pb-12 pt-16 lg:py-28">
       <div className="container flex flex-col items-center gap-5 text-center">
         <h1
-          className="animate-fade-up text-balance text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
+          className="animate-fade-up text-balance text-4xl font-extrabold tracking-tight opacity-0 sm:text-5xl md:text-6xl lg:text-7xl"
           style={{
             animationDelay: "0.3s",
             animationFillMode: "forwards",
@@ -17,7 +17,7 @@ export default async function Home() {
           <span className="font-extrabold text-primary">WriteLix</span>
         </h1>
         <p
-          className="max-w-[42rem] animate-fade-up text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
+          className="max-w-[42rem] animate-fade-up text-balance leading-normal text-muted-foreground opacity-0 sm:text-xl  sm:leading-8"
           style={{ animationDelay: "0.4s", animationFillMode: "forwards" }}
         >
           Integrate advanced AI tools to elevate your learning experience and
@@ -25,7 +25,7 @@ export default async function Home() {
           study sessions.
         </p>
         <div
-          className="flex animate-fade-up justify-center gap-2 md:gap-4"
+          className="flex animate-fade-up justify-center gap-2 opacity-0  md:gap-4"
           style={{ animationDelay: "0.5s", animationFillMode: "forwards" }}
         >
           <Link href="/pricing" className={buttonVariants({ size: "lg" })}>

@@ -2,14 +2,14 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import type { AdapterAccount } from "@auth/core/adapters";
-import { relations } from "drizzle-orm";
+import { type InferSelectModel, relations } from "drizzle-orm";
 import {
   integer,
   pgTable,
   primaryKey,
   timestamp,
-  varchar,
   uuid,
+  varchar,
   type PgVarcharConfig,
 } from "drizzle-orm/pg-core";
 
@@ -38,14 +38,18 @@ export const users = pgTable("user", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   account: many(accounts),
+  verificationTokens: many(verificationTokens),
+  passwordResetTokens: many(passwordResetTokens),
 }));
+
+export type User = InferSelectModel<typeof users>;
 
 export const accounts = pgTable(
   "account",
   {
     userId: uuid("userId")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
     type: dVarchar("type").$type<AdapterAccount["type"]>().notNull(),
     provider: dVarchar("provider").notNull(),
     providerAccountId: dVarchar("providerAccountId").notNull(),
@@ -71,9 +75,58 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
   }),
 }));
 
-export const verificationTokens = pgTable("verification_token", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  email: dVarchar("email").notNull(),
-  token: dVarchar("token").notNull().unique(),
-  expires: timestamp("expires").notNull(),
-});
+export type Account = InferSelectModel<typeof accounts>;
+
+export const verificationTokens = pgTable(
+  "verification_token",
+  {
+    userId: uuid("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    token: uuid("token").defaultRandom().unique().notNull(),
+    expires: timestamp("expires").notNull(),
+  },
+  (verificationToken) => ({
+    compoundKey: primaryKey({
+      columns: [verificationToken.userId, verificationToken.token],
+    }),
+  }),
+);
+
+export const verificationTokensRelations = relations(
+  verificationTokens,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [verificationTokens.userId],
+      references: [users.id],
+    }),
+  }),
+);
+
+export type VerificationToken = InferSelectModel<typeof verificationTokens>;
+
+export const passwordResetTokens = pgTable(
+  "password_reset_token",
+  {
+    userId: uuid("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    token: uuid("token").defaultRandom().unique().notNull(),
+    expires: timestamp("expires").notNull(),
+  },
+  (passwordResetToken) => ({
+    compoundKey: primaryKey({
+      columns: [passwordResetToken.userId, passwordResetToken.token],
+    }),
+  }),
+);
+
+export const passwordResetTokensRelations = relations(
+  passwordResetTokens,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [passwordResetTokens.userId],
+      references: [users.id],
+    }),
+  }),
+);

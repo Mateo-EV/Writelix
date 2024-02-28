@@ -1,13 +1,26 @@
 import { env } from "@/env";
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { db } from "./db";
 import { loginUserSchema } from "@/schemas";
-import { eq } from "drizzle-orm";
-import { users } from "./db/schema";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import bcrypt from "bcryptjs";
+import { eq } from "drizzle-orm";
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import { db } from "./db";
+import { users } from "./db/schema";
+import { sendVerficationEmail } from "@/lib/resend";
+import { generateVerificationToken } from "@/lib/tokens";
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      image: string;
+    };
+  }
+}
 
 export const {
   handlers: { GET, POST },
@@ -62,7 +75,28 @@ export const {
 
       if (!existingUser) return null;
 
+      token.name = existingUser.name;
+
       return token;
+    },
+    signIn: async ({ user, account }) => {
+      if (account?.type !== "credentials") return true;
+      if (!user.id || !user.email) return false;
+
+      const existingUser = await db.query.users.findFirst({
+        where: eq(users.id, user.id),
+      });
+
+      if (!existingUser?.emailVerified) {
+        const verificationToken = await generateVerificationToken(user.id);
+
+        if (!verificationToken?.token) return false;
+
+        void sendVerficationEmail(user.email, verificationToken.token);
+        return false;
+      }
+
+      return true;
     },
   },
   adapter: DrizzleAdapter(db),

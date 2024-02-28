@@ -20,7 +20,8 @@
     --secondary-foreground: 213 1% 23%;
     --accent: 213 1% 83%;
     --accent-foreground: 213 1% 23%;
-    --destructive: 7 83% 23%;
+    /* --destructive: 7 83% 23%; */
+    --destructive: 7 83% 59%;
     --destructive-foreground: 7 83% 83%;
     --ring: 213 95% 79%;
     --radius: 0.5rem;

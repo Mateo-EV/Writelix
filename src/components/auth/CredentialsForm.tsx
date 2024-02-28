@@ -19,10 +19,11 @@ import {
 import { api } from "@/trpc/react";
 
 import { useForm } from "@/hooks/useForm";
+import { cn } from "@/lib/utils";
 import { AlertCircle } from "lucide-react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { toast } from "sonner";
-import { ButtonWithLoading } from "../ui/button";
+import { ButtonWithLoading, buttonVariants } from "../ui/button";
 
 type CredentiaslFormProps = {
   isRegisterPage: boolean;
@@ -43,24 +44,14 @@ export const CredentialsForm = ({ isRegisterPage }: CredentiaslFormProps) => {
   });
 
   const { mutateAsync: login } = api.auth.login.useMutation({
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      router.push("/dashboard");
-      router.refresh();
-    },
-    onError: (err) => {
-      toast.error(err.message);
+    onSuccess: ({ status }) => {
+      if (status === "AUTHENTICATED") {
+        router.push("/dashboard");
+        router.refresh();
+      }
     },
   });
-  const { mutateAsync: register } = api.auth.register.useMutation({
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      router.push("/login");
-    },
-    onError: () => {
-      toast.error("Failed to register");
-    },
-  });
+  const { mutateAsync: register } = api.auth.register.useMutation();
 
   const onSubmit = async (
     values: loginUserSchemaType | registerUserSchemaType,
@@ -74,74 +65,84 @@ export const CredentialsForm = ({ isRegisterPage }: CredentiaslFormProps) => {
   };
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-4">
-          {urlError && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-4"
+      >
+        {urlError && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
 
-              <AlertTitle>Account Not Linked</AlertTitle>
-              <AlertDescription>
-                <p>Email already in use by another account</p>
-              </AlertDescription>
-            </Alert>
-          )}
-          {isRegisterPage && (
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <FormInput placeholder="Matthew" type="text" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}
+            <AlertTitle>Account Not Linked</AlertTitle>
+            <AlertDescription>
+              <p>Email already in use by another account</p>
+            </AlertDescription>
+          </Alert>
+        )}
+        {isRegisterPage && (
           <FormField
             control={form.control}
-            name="email"
+            name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <FormInput
-                    placeholder="name@example.com"
-                    type="email"
-                    {...field}
-                  />
+                  <FormInput placeholder="Matthew" type="text" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <FormInput
-                    placeholder="**********"
-                    type="password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <ButtonWithLoading
-            isLoading={form.formState.isSubmitting}
-            type="submit"
-          >
-            {isRegisterPage ? "Register" : "Login"}
-          </ButtonWithLoading>
-        </div>
+        )}
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <FormInput
+                  placeholder="name@example.com"
+                  type="email"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <FormInput
+                  placeholder="**********"
+                  type="password"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Link
+          className={cn(
+            buttonVariants({ variant: "link", size: "sm" }),
+            "h-auto justify-end p-0",
+          )}
+          href="/reset-password"
+        >
+          Forgot password?
+        </Link>
+        <ButtonWithLoading
+          isLoading={form.formState.isSubmitting}
+          type="submit"
+        >
+          {isRegisterPage ? "Register" : "Login"}
+        </ButtonWithLoading>
       </form>
     </Form>
   );
