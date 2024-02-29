@@ -1,5 +1,7 @@
 import "@/app/globals.css";
 
+import "react-loading-skeleton/dist/skeleton.css";
+
 import { Poppins } from "next/font/google";
 
 import { Navbar } from "@/components/layout/Navbar";

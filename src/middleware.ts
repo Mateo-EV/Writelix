@@ -33,5 +33,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/((?!api/trpc/()|_next/static|_next/image|.*\\.ico$).*)"],
+  matcher: ["/((?!.+\\.[\\w]+$|api/trpc|_next).*)", "/(api/trpc/auth.*)"],
 };

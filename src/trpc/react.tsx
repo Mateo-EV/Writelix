@@ -32,6 +32,11 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
     () =>
       new QueryClient({
         mutationCache,
+        defaultOptions: {
+          queries: {
+            staleTime: Infinity,
+          },
+        },
       }),
   );
 
