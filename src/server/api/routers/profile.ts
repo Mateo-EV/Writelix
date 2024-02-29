@@ -11,7 +11,6 @@ export const profileRouter = createTRPCRouter({
         .update(users)
         .set({ name })
         .where(eq(users.id, ctx.session.user.id));
-
       return { message: "Profile updated successfully" };
     }),
 });

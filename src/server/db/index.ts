@@ -16,4 +16,7 @@ class CustomLogger implements Logger {
   }
 }
 
-export const db = drizzle(pool, { schema, logger: new CustomLogger() });
+export const db = drizzle(pool, {
+  schema,
+  logger: env.NODE_ENV === "production" ? false : new CustomLogger(),
+});

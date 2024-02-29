@@ -27,10 +27,11 @@ export default auth((req) => {
 
   if (!isLoggedIn && isProtectedRoute)
     return NextResponse.redirect(new URL("/login", nextUrl));
+  console.log(isLoggedIn);
 
   return NextResponse.next();
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|.*\\.ico$).*)"],
+  matcher: ["/((?!api/trpc/()|_next/static|_next/image|.*\\.ico$).*)"],
 };

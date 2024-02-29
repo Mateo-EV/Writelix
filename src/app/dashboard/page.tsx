@@ -1,5 +1,6 @@
 import { DashboardContainer } from "@/components/dashboard/DashboardContainer";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { FilesList } from "@/components/home/FilesList";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
@@ -36,6 +37,7 @@ export default function DasboardPage() {
           placeholder="Search media"
         />
       </div>
+      <FilesList />
     </DashboardContainer>
   );
 }

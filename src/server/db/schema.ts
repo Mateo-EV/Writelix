@@ -10,7 +10,9 @@ import {
   timestamp,
   uuid,
   varchar,
+  text,
   type PgVarcharConfig,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -40,6 +42,8 @@ export const usersRelations = relations(users, ({ many }) => ({
   account: many(accounts),
   verificationTokens: many(verificationTokens),
   passwordResetTokens: many(passwordResetTokens),
+  files: many(files),
+  documentations: many(documentations),
 }));
 
 export type User = InferSelectModel<typeof users>;
@@ -80,7 +84,7 @@ export type Account = InferSelectModel<typeof accounts>;
 export const verificationTokens = pgTable(
   "verification_token",
   {
-    userId: uuid("userId")
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
     token: uuid("token").defaultRandom().unique().notNull(),
@@ -108,7 +112,7 @@ export type VerificationToken = InferSelectModel<typeof verificationTokens>;
 export const passwordResetTokens = pgTable(
   "password_reset_token",
   {
-    userId: uuid("userId")
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
     token: uuid("token").defaultRandom().unique().notNull(),
@@ -130,3 +134,114 @@ export const passwordResetTokensRelations = relations(
     }),
   }),
 );
+
+export type PasswordResetToken = InferSelectModel<typeof passwordResetTokens>;
+
+export enum FileType {
+  YOUTUBE = "YOUTUBE",
+  AUDIO = "AUDIO",
+  PDF = "PDF",
+  WEB = "WEB",
+}
+
+export enum FileStatus {
+  PENDING = "PENDING",
+  PROCESSING = "PROCESSING",
+  FAILED = "FAILED",
+  SUCCESS = "SUCCESS",
+}
+
+export const files = pgTable("file", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: dVarchar("name").notNull(),
+  key: dVarchar("key").notNull(),
+  type: varchar("type", { length: 10 }).$type<FileType>().notNull(),
+  status: varchar("status", { length: 10 }).$type<FileStatus>().notNull(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow(),
+  lastModifiedAt: timestamp("last_modified_at").defaultNow(),
+});
+
+export const filesRelations = relations(files, ({ one, many }) => ({
+  user: one(users, { fields: [files.userId], references: [users.id] }),
+  messages: many(messages),
+  documentationsToFiles: many(documentationsToFiles),
+}));
+
+export type File = InferSelectModel<typeof files>;
+
+export const documentations = pgTable("documentation", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  title: dVarchar("name").notNull(),
+  content: text("content"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const documentationRelations = relations(
+  documentations,
+  ({ one, many }) => ({
+    user: one(users, {
+      fields: [documentations.userId],
+      references: [users.id],
+    }),
+    documentationsToFiles: many(documentationsToFiles),
+  }),
+);
+
+export type Documentation = InferSelectModel<typeof documentations>;
+
+export const documentationsToFiles = pgTable(
+  "documentations_to_files",
+  {
+    documentationId: uuid("documentation_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    fileId: uuid("file_id")
+      .notNull()
+      .references(() => files.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  },
+  (t) => ({
+    compoundKey: primaryKey({
+      columns: [t.documentationId, t.fileId],
+    }),
+  }),
+);
+
+export const documentationsToFilesRelations = relations(
+  documentationsToFiles,
+  ({ one }) => ({
+    documentation: one(documentations, {
+      fields: [documentationsToFiles.documentationId],
+      references: [documentations.id],
+    }),
+    file: one(files, {
+      fields: [documentationsToFiles.fileId],
+      references: [files.id],
+    }),
+  }),
+);
+
+export const messages = pgTable("message", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  content: text("content").notNull(),
+
+  isIAMessage: boolean("message_from_ia").notNull(),
+  fileId: uuid("file_id").references(() => files.id),
+
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  file: one(files, {
+    fields: [messages.fileId],
+    references: [files.id],
+  }),
+}));
+
+export type Message = InferSelectModel<typeof messages>;
