@@ -27,7 +27,6 @@ export default auth((req) => {
 
   if (!isLoggedIn && isProtectedRoute)
     return NextResponse.redirect(new URL("/login", nextUrl));
-  console.log(isLoggedIn);
 
   return NextResponse.next();
 });

@@ -15,10 +15,12 @@ export const UserAvatar = ({ user, ...props }: UserAvatarProps) => {
         src={user.image ?? ""}
         referrerPolicy="no-referrer"
       />
-      <AvatarFallback>
-        <span className="sr-only">{user.name}</span>
-        <UserIcon className="size-4" />
-      </AvatarFallback>
+      {!user.image && (
+        <AvatarFallback>
+          <span className="sr-only">{user.name}</span>
+          <UserIcon className="size-4" />
+        </AvatarFallback>
+      )}
     </Avatar>
   );
 };

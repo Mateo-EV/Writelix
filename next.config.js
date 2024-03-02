@@ -5,6 +5,22 @@
 await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
-const config = { reactStrictMode: false };
+const config = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+        port: "",
+      },
+    ],
+  },
+  webpack: (config) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    config.resolve.alias.canvas = false;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return config;
+  },
+};
 
 export default config;

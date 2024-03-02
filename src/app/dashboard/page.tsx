@@ -1,11 +1,11 @@
 import { DashboardContainer } from "@/components/dashboard/DashboardContainer";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { FilesList } from "@/components/home/FilesList";
+import { MediaList } from "@/components/home/MediaList";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SearchIcon } from "lucide-react";
 
-const filters = ["All", "Video", "Audio", "Pdf", "Creations"];
+const filters = ["All", "Video", "Audio", "Pdf", "Web", "Creations"];
 
 export const metadata = {
   title: "Dashboard",
@@ -37,7 +37,7 @@ export default function DasboardPage() {
           placeholder="Search media"
         />
       </div>
-      <FilesList />
+      <MediaList />
     </DashboardContainer>
   );
 }

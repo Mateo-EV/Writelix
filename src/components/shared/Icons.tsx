@@ -48,4 +48,43 @@ export const Icons = {
       />
     </svg>
   ),
+  pdf: (props: LucideProps) => (
+    <svg
+      stroke="#D82328"
+      fill="#D82328"
+      stroke-width="0"
+      viewBox="0 0 512 512"
+      height="1em"
+      width="1em"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path d="M0 64C0 28.7 28.7 0 64 0H224V128c0 17.7 14.3 32 32 32H384V304H176c-35.3 0-64 28.7-64 64V512H64c-35.3 0-64-28.7-64-64V64zm384 64H256V0L384 128zM176 352h32c30.9 0 56 25.1 56 56s-25.1 56-56 56H192v32c0 8.8-7.2 16-16 16s-16-7.2-16-16V448 368c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24H192v48h16zm96-80h32c26.5 0 48 21.5 48 48v64c0 26.5-21.5 48-48 48H304c-8.8 0-16-7.2-16-16V368c0-8.8 7.2-16 16-16zm32 128c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H320v96h16zm80-112c0-8.8 7.2-16 16-16h48c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v32h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v48c0 8.8-7.2 16-16 16s-16-7.2-16-16V432 368z"></path>
+    </svg>
+  ),
+  web: (props: LucideProps) => (
+    <svg
+      stroke="currentColor"
+      fill="none"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      height="1em"
+      width="1em"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M19.5 7a9 9 0 0 0 -7.5 -4a8.991 8.991 0 0 0 -7.484 4"></path>
+      <path d="M11.5 3a16.989 16.989 0 0 0 -1.826 4"></path>
+      <path d="M12.5 3a16.989 16.989 0 0 1 1.828 4"></path>
+      <path d="M19.5 17a9 9 0 0 1 -7.5 4a8.991 8.991 0 0 1 -7.484 -4"></path>
+      <path d="M11.5 21a16.989 16.989 0 0 1 -1.826 -4"></path>
+      <path d="M12.5 21a16.989 16.989 0 0 0 1.828 -4"></path>
+      <path d="M2 10l1 4l1.5 -4l1.5 4l1 -4"></path>
+      <path d="M17 10l1 4l1.5 -4l1.5 4l1 -4"></path>
+      <path d="M9.5 10l1 4l1.5 -4l1.5 4l1 -4"></path>
+    </svg>
+  ),
 };

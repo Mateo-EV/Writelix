@@ -138,17 +138,17 @@ export const passwordResetTokensRelations = relations(
 export type PasswordResetToken = InferSelectModel<typeof passwordResetTokens>;
 
 export enum FileType {
-  YOUTUBE = "YOUTUBE",
-  AUDIO = "AUDIO",
-  PDF = "PDF",
-  WEB = "WEB",
+  YOUTUBE = "youtube",
+  AUDIO = "audio",
+  PDF = "pdf",
+  WEB = "web",
 }
 
 export enum FileStatus {
-  PENDING = "PENDING",
-  PROCESSING = "PROCESSING",
-  FAILED = "FAILED",
-  SUCCESS = "SUCCESS",
+  PENDING = "pending",
+  PROCESSING = "processing",
+  FAILED = "failed",
+  SUCCESS = "success",
 }
 
 export const files = pgTable("file", {
@@ -178,7 +178,7 @@ export const documentations = pgTable("documentation", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   title: dVarchar("name").notNull(),
-  content: text("content"),
+  content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

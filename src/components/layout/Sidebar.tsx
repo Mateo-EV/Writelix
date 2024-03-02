@@ -82,7 +82,7 @@ export const Sidebar = () => {
     return (
       <>
         <Button
-          className="fixed bottom-4 right-4 rounded-full"
+          className="fixed bottom-4 right-4 z-20 rounded-full"
           variant="secondary"
           size="icon"
           onClick={() => setIsOpen((prev) => !prev)}
