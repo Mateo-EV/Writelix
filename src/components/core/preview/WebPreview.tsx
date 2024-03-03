@@ -1,15 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 import { useLogoFromUrl } from "@/lib/fetch";
-import { LoadingSpinner } from "../ui/loading-spinner";
-import { Icons } from "./Icons";
+import { LoadingSpinner } from "../../ui/loading-spinner";
+import { Icons } from "../../shared/Icons";
 import { cn } from "@/lib/utils";
 
-type LogoWebsiteProps = {
+type WebPreviewProps = {
   className: string;
   url: string;
 };
 
-export const LogoWebsite = ({ url, className }: LogoWebsiteProps) => {
+export const WebPreview = ({ url, className }: WebPreviewProps) => {
   const { data, isLoading } = useLogoFromUrl(url);
 
   if (isLoading) return <LoadingSpinner />;

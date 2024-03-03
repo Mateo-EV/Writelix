@@ -1,8 +1,8 @@
+import { faker } from "@faker-js/faker";
+import { neon } from "@neondatabase/serverless";
 import { config } from "dotenv";
 import { type InferInsertModel } from "drizzle-orm";
-import { faker } from "@faker-js/faker";
 import { drizzle } from "drizzle-orm/neon-http";
-import { neon } from "@neondatabase/serverless";
 import * as schema from "./schema";
 
 config();
@@ -23,10 +23,7 @@ const main = async () => {
       "5e7dcb99-290e-4521-8788-f8b6d05e1e72-s2m7wi.app-sonido-RELOJ-_240p_.mp3",
       "Reloj",
     ],
-    [schema.FileType.WEB]: [
-      "https://docs.uploadthing.com",
-      "Que es uploadthing?",
-    ],
+    [schema.FileType.WEB]: ["https://www.wikipedia.org", "Que es wikipedia"],
     [schema.FileType.YOUTUBE]: ["ALVLVG60rdA", "Debate Futbol"],
   } as const;
 
@@ -34,7 +31,6 @@ const main = async () => {
 
   await db.delete(schema.files);
   await db.delete(schema.documentations);
-
   for (let i = 0; i < 10; i++) {
     const type = faker.helpers.enumValue(schema.FileType);
     documentationsSeeded.push({

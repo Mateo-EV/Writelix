@@ -3,14 +3,37 @@
 import { api } from "@/trpc/react";
 import { Ghost } from "lucide-react";
 import { Skeleton } from "../shared/Skeleton";
+import { AlertMessage } from "../ui/alert";
 import { Media } from "./Media";
+import { ScrollArea } from "../ui/scroll-area";
+import { useSearchParams } from "next/navigation";
+import { type RouterInputs } from "@/trpc/shared";
 
 export const MediaList = () => {
-  const { data: media, isLoading } = api.home.getFilesAndDocumentation.useQuery(
-    {},
+  const searchParams = useSearchParams();
+
+  const type = searchParams.get(
+    "type",
+  ) as RouterInputs["home"]["getFilesAndDocumentation"]["type"];
+
+  const {
+    data: media,
+    isLoading,
+    isError,
+  } = api.home.getFilesAndDocumentation.useQuery(
+    {
+      search: searchParams.get("search"),
+      type,
+    },
+    {
+      retry: (_, err) => Boolean(err.data?.zodError?.fieldErrors),
+    },
   );
 
-  if (isLoading) {
+  if (isError)
+    return <AlertMessage type="destructive" title="Something went wrong" />;
+
+  if (isLoading)
     return (
       <Skeleton
         containerClassName="block space-y-4"
@@ -19,9 +42,8 @@ export const MediaList = () => {
         count={4}
       />
     );
-  }
 
-  if (!media || media.length === 0) {
+  if (!media || media.length === 0)
     return (
       <div className="mt-16 flex flex-col items-center gap-2">
         <Ghost className="h-8 w-8 text-zinc-800" />
@@ -29,13 +51,14 @@ export const MediaList = () => {
         <p>Let&apos;s upload something new...</p>
       </div>
     );
-  }
 
   return (
-    <div className="grid auto-rows-[24rem] grid-cols-[repeat(auto-fill,minmax(min(100%,14rem),1fr))] gap-4">
-      {media.map((media) => (
-        <Media media={media} key={media.id} />
-      ))}
-    </div>
+    <ScrollArea>
+      <div className="grid auto-rows-[24rem] grid-cols-[repeat(auto-fill,minmax(min(100%,14rem),1fr))] gap-4 pr-3">
+        {media.map((media) => (
+          <Media media={media} key={media.id + searchParams.toString()} />
+        ))}
+      </div>
+    </ScrollArea>
   );
 };

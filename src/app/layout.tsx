@@ -32,7 +32,7 @@ export default function RootLayout({
   // authModal: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <body className={`${poppins.variable} font-poppins`}>
         <ThemeProvider attribute="class" defaultTheme="light">
           <Navbar />

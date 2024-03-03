@@ -22,6 +22,7 @@ export const ProfileForm = ({ name }: ProfileFormProps) => {
     api.profile.editProfileById.useMutation({
       onSuccess: () => {
         router.refresh();
+        form.reset({ name: form.getValues().name });
       },
     });
 
@@ -41,6 +42,7 @@ export const ProfileForm = ({ name }: ProfileFormProps) => {
         />
         <ButtonWithLoading
           isLoading={isLoading}
+          disabled={!form.formState.isDirty}
           className="w-full self-end sm:w-min"
           type="submit"
         >

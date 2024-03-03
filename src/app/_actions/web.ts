@@ -12,7 +12,7 @@ export const getLogoFromUrl = async (url: string) => {
 
   const parser = new JSDOM(html);
   const htmlDocument = parser.window.document;
-  const iconsLinks = htmlDocument.querySelectorAll("link[rel='icon']");
+  const iconsLinks = htmlDocument.querySelectorAll("link");
 
   const filteredLinks:
     | Element[]
@@ -22,7 +22,8 @@ export const getLogoFromUrl = async (url: string) => {
     if (!iconElement.getAttribute("href")) return;
     if (
       !iconElement.getAttribute("href")!.includes("android") &&
-      !iconElement.getAttribute("href")!.includes("android")
+      !iconElement.getAttribute("href")!.includes("apple") &&
+      iconElement.getAttribute("rel")?.includes("icon")
     ) {
       filteredLinks.push(iconElement);
     }
@@ -34,8 +35,12 @@ export const getLogoFromUrl = async (url: string) => {
   return {
     urlImage,
     title: htmlDocument.title,
-    description: htmlDocument
-      .querySelector("meta[name='description']")
-      ?.getAttribute("content"),
+    description:
+      htmlDocument
+        .querySelector("meta[name='description']")
+        ?.getAttribute("content") ??
+      htmlDocument
+        .querySelector("meta[property='og//:description']")
+        ?.getAttribute("content"),
   };
 };

@@ -35,6 +35,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
         defaultOptions: {
           queries: {
             staleTime: Infinity,
+            cacheTime: Infinity,
           },
         },
       }),

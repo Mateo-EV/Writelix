@@ -11,7 +11,10 @@ const config = {
       {
         protocol: "https",
         hostname: "images.pexels.com",
-        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
       },
     ],
   },

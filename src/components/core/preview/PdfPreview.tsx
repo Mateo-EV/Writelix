@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { pdfjs } from "react-pdf";
-import { LoadingSpinner } from "../ui/loading-spinner";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
+import { pdfjs } from "react-pdf";
+import { LoadingSpinner } from "../../ui/loading-spinner";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
-type CanvasPDFProps = React.ComponentPropsWithoutRef<"canvas"> & {
+type PdfPreviewProps = React.ComponentPropsWithoutRef<"canvas"> & {
   url: string;
 };
 
-export const CanvasPDF = ({ url, ...props }: CanvasPDFProps) => {
+export const PdfPreview = ({ url, ...props }: PdfPreviewProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pageLoaded = useRef(false);
 

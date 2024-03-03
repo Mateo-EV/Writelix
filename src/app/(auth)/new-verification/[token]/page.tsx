@@ -1,12 +1,11 @@
 import { Icons } from "@/components/shared/Icons";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertMessage } from "@/components/ui/alert";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   getVerificationTokenByToken,
   verifyEmail,
 } from "@/data/verificationToken";
 import { type VerificationToken } from "@/server/db/schema";
-import { AlertCircle, Check } from "lucide-react";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -45,17 +44,11 @@ const EmailVerified = async ({
   const { message, status } = await verifyEmail(verificationToken);
 
   return (
-    <Alert
-      variant={status === "error" ? "destructive" : "success"}
+    <AlertMessage
       className="mt-4"
-    >
-      {status === "error" ? (
-        <AlertCircle className="h-4 w-4" />
-      ) : (
-        <Check className="h-4 w-4" />
-      )}
-      <AlertTitle>{status === "error" ? "Error" : "Success"}</AlertTitle>
-      <AlertDescription>{message}</AlertDescription>
-    </Alert>
+      type={status === "error" ? "destructive" : "success"}
+      title={status === "error" ? "Error" : "Success"}
+      description={message}
+    />
   );
 };
