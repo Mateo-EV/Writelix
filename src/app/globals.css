@@ -50,6 +50,38 @@
   }
 }
 
+.theme-custom {
+  --gradient: #97c4fc;
+
+  --background: 227 61.75% 6.32%;
+  --foreground: 227 9.5% 98.95%;
+
+  --muted: 227 47.5% 23.700000000000003%;
+  --muted-foreground: 227 9.5% 57.9%;
+
+  --popover: 227 46% 10.27%;
+  --popover-foreground: 227 9.5% 98.95%;
+
+  --card: 227 46% 10.27%;
+  --card-foreground: 227 9.5% 98.95%;
+
+  --border: 227 47.5% 23.700000000000003%;
+  --input: 227 47.5% 23.700000000000003%;
+
+  --primary: 227 95% 79%;
+  --primary-foreground: 227 9.5% 7.9%;
+
+  --secondary: 227 47.5% 23.700000000000003%;
+  --secondary-foreground: 227 9.5% 98.95%;
+
+  --accent: 227 47.5% 23.700000000000003%;
+  --accent-foreground: 227 9.5% 98.95%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 227 9.5% 98.95%;
+
+  --ring: 227 95% 79%;
+}
  
 @layer base {
   * {

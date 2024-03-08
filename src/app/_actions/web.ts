@@ -29,8 +29,8 @@ export const getLogoFromUrl = async (url: string) => {
     }
   });
 
-  const urlImage =
-    urlFormatted.origin + filteredLinks[0]?.getAttribute("href") ?? null;
+  const link = filteredLinks[0]?.getAttribute("href");
+  const urlImage = link ? urlFormatted.origin + link : null;
 
   return {
     urlImage,

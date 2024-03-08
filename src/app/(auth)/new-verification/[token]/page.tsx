@@ -1,4 +1,4 @@
-import { Icons } from "@/components/shared/Icons";
+import { Icons } from "@/components/Icons";
 import { AlertMessage } from "@/components/ui/alert";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {

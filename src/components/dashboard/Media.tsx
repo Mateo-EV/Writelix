@@ -4,7 +4,7 @@ import { AudioLinesIcon, FileTextIcon } from "lucide-react";
 import Image from "next/image";
 import { PdfPreview } from "../core/preview/PdfPreview";
 import { WebPreview } from "../core/preview/WebPreview";
-import { Icons } from "../shared/Icons";
+import { Icons } from "../Icons";
 import { YoutubePreview } from "../core/preview/YoutubePreview";
 import AudioImage from "@/assets/Audio-Default.jpg";
 import CreationImage from "@/assets/Creation-Default.jpg";

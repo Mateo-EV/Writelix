@@ -1,5 +1,5 @@
 import { NewPasswordResetForm } from "@/components/auth/NewPasswordResetForm";
-import { Icons } from "@/components/shared/Icons";
+import { Icons } from "@/components/Icons";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getPasswordResetTokenByToken } from "@/data/passwordResetToken";
 import { AlertCircle } from "lucide-react";

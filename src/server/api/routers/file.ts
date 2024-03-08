@@ -1,26 +1,33 @@
+import { db } from "@/server/db";
+import { files } from "@/server/db/schema";
+import { and, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { authProcedure, createTRPCRouter } from "../trpc";
-import { FileType, files } from "@/server/db/schema";
-import { eq, ilike, or } from "drizzle-orm";
+
+export const getFileById = async (fileId: string, userId: string) => {
+  return await db.query.files.findFirst({
+    where: and(eq(files.id, fileId), eq(files.userId, userId)),
+  });
+};
 
 export const fileRouter = createTRPCRouter({
-  getAll: authProcedure
-    .input(
-      z.object({
-        type: z.nativeEnum(FileType).optional(),
-        search: z.string().optional(),
-      }),
-    )
-    .query(async ({ ctx, input: { type, search } }) => {
-      const whereClause = or(
-        type ? eq(files.type, type) : undefined,
-        search ? ilike(files.name, `%${search}%`) : undefined,
-      );
+  getAll: authProcedure.query(async ({ ctx }) => {
+    const filesFiltered = await ctx.db.query.files.findMany({
+      orderBy: desc(files.updatedAt),
+      columns: {
+        id: true,
+        name: true,
+        createdAt: true,
+        type: true,
+      },
+      where: eq(files.userId, ctx.session.user.id),
+    });
 
-      const filesFiltered = await ctx.db.query.files.findMany({
-        where: or(whereClause),
-      });
-
-      return filesFiltered;
+    return filesFiltered;
+  }),
+  getByFileId: authProcedure
+    .input(z.string())
+    .query(async ({ ctx, input: fileId }) => {
+      return await getFileById(fileId, ctx.session.user.id);
     }),
 });

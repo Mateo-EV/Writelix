@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { UserAvatar } from "../shared/UserAvatar";
+import { UserAvatar } from "../UserAvatar";
 import { CreditCard, LayoutDashboard, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";

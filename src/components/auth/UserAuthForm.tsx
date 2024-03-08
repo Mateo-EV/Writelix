@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Icons } from "../shared/Icons";
+import { Icons } from "../Icons";
 import { usePathname } from "next/navigation";
 import { CredentialsForm } from "./CredentialsForm";
 import { AuthProviders } from "./AuthProviders";

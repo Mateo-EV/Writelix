@@ -1,6 +1,6 @@
 import { type User } from "@/server/db/schema";
 import { type AvatarProps } from "@radix-ui/react-avatar";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { UserIcon } from "lucide-react";
 
 type UserAvatarProps = AvatarProps & {

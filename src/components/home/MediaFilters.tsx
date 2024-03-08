@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 const filters = [
   {
@@ -45,19 +44,23 @@ export const MediaFilters = () => {
     return `/dashboard?${params.toString()}`;
   };
 
-  return filters.map(({ content, type }) => (
-    <Link
-      key={content}
-      className={cn(
-        buttonVariants({
-          variant: selectedType === type ? "secondary" : "outline",
-          size: "sm",
-        }),
-        "rounded-2xl px-4",
-      )}
-      href={transformURL(type)}
-    >
-      {content}
-    </Link>
-  ));
+  return (
+    <div className="space-x-4">
+      {filters.map(({ content, type }) => (
+        <Link
+          key={content}
+          className={cn(
+            buttonVariants({
+              variant: selectedType === type ? "secondary" : "outline",
+              size: "sm",
+            }),
+            "rounded-2xl px-4",
+          )}
+          href={transformURL(type)}
+        >
+          {content}
+        </Link>
+      ))}
+    </div>
+  );
 };

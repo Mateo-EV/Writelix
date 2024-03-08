@@ -31,7 +31,7 @@ const main = async () => {
 
   await db.delete(schema.files);
   await db.delete(schema.documentations);
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 15; i++) {
     const type = faker.helpers.enumValue(schema.FileType);
     documentationsSeeded.push({
       userId: user!.id,
@@ -47,7 +47,7 @@ const main = async () => {
     });
   }
 
-  await db.insert(schema.documentations).values(documentationsSeeded);
+  // await db.insert(schema.documentations).values(documentationsSeeded);
   await db.insert(schema.files).values(filesSeeded);
   console.log("Seed done");
 };

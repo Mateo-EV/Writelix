@@ -1,6 +1,6 @@
 import { STORAGE_URL } from "@/config";
 import { FileType, documentations, files } from "@/server/db/schema";
-import { and, desc, sql } from "drizzle-orm";
+import { and, desc, sql, eq } from "drizzle-orm";
 import { unionAll } from "drizzle-orm/pg-core";
 import { z } from "zod";
 import { authProcedure, createTRPCRouter } from "../trpc";
@@ -17,6 +17,7 @@ export const homeRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input: { type, search } }) => {
       const whereClause = and(
+        sql`"user_id" = ${ctx.session.user.id}`,
         type ? sql`"type" = ${type}` : undefined,
         search ? sql`"name" ilike ${"%" + search + "%"}` : undefined,
       );
@@ -32,6 +33,7 @@ export const homeRouter = createTRPCRouter({
           ),
           type: sql<NonNullable<typeof type>>`${files.type}`.as("type"),
           updatedAt: files.updatedAt,
+          userId: files.userId,
         })
         .from(files);
       const documentationsFiltered = ctx.db
@@ -41,6 +43,7 @@ export const homeRouter = createTRPCRouter({
           key: sql<string | null>`null`.as("key"),
           type: sql<NonNullable<typeof type>>`'creations'`.as("type"),
           updatedAt: documentations.updatedAt,
+          userId: documentations.userId,
         })
         .from(documentations);
 

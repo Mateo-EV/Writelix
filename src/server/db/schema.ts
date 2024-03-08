@@ -160,8 +160,8 @@ export const files = pgTable("file", {
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const filesRelations = relations(files, ({ one, many }) => ({
@@ -179,8 +179,8 @@ export const documentations = pgTable("documentation", {
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   title: dVarchar("title").notNull(),
   content: text("content").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const documentationRelations = relations(

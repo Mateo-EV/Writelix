@@ -1,5 +1,5 @@
+import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function DashboardLayout({
   children,
@@ -7,11 +7,14 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-[calc(100vh-4rem)] overflow-hidden lg:container lg:px-4">
-      <Sidebar />
-      {/* <ScrollArea> */}
-      {children}
-      {/* </ScrollArea> */}
-    </div>
+    <>
+      <Navbar />
+      <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
+        <Sidebar />
+        {/* <ScrollArea> */}
+        {children}
+        {/* </ScrollArea> */}
+      </div>
+    </>
   );
 }

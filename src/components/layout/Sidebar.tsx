@@ -48,7 +48,7 @@ const sidebarItems = [
     icon: SettingsIcon,
     href: "/dashboard/settings",
   },
-];
+] as const;
 
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -57,23 +57,28 @@ export const Sidebar = () => {
 
   const sidebarItemsRender = useMemo(
     () => (
-      <div className="mt-6 flex flex-col gap-4">
+      <nav className="mt-6 flex flex-col gap-2 text-sm">
         {sidebarItems.map(({ title, icon: Icon, href }) => (
           <Link
             href={href}
             className={cn(
               buttonVariants({
-                variant: pathname === href ? "default" : "ghost",
+                variant:
+                  pathname === href ||
+                  (pathname.startsWith(href) && href !== "/dashboard")
+                    ? "default"
+                    : "ghost",
+                size: "sm",
               }),
               "justify-start",
             )}
             onClick={() => setIsOpen(false)}
             key={title}
           >
-            <Icon className="mr-6" /> {title}
+            <Icon className="mr-4 size-5" /> <span>{title}</span>
           </Link>
         ))}
-      </div>
+      </nav>
     ),
     [pathname],
   );
@@ -96,7 +101,7 @@ export const Sidebar = () => {
     );
 
   return (
-    <div className="hidden basis-[250px] border-r px-4 lg:block">
+    <div className="hidden basis-[250px] px-4 lg:block">
       {sidebarItemsRender}
     </div>
   );

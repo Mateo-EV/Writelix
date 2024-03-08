@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { Icons } from "../shared/Icons";
+import { Icons } from "../Icons";
 import { signIn } from "next-auth/react";
 import { LoadingSpinner } from "../ui/loading-spinner";
 

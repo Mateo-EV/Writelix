@@ -1,5 +1,5 @@
 import { ResetForm } from "@/components/auth/ResetForm";
-import { Icons } from "@/components/shared/Icons";
+import { Icons } from "@/components/Icons";
 
 export default function ResetPasswordPage() {
   return (

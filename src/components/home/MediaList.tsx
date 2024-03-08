@@ -1,13 +1,13 @@
 "use client";
 
 import { api } from "@/trpc/react";
-import { Ghost } from "lucide-react";
-import { Skeleton } from "../shared/Skeleton";
-import { AlertMessage } from "../ui/alert";
-import { Media } from "./Media";
-import { ScrollArea } from "../ui/scroll-area";
-import { useSearchParams } from "next/navigation";
 import { type RouterInputs } from "@/trpc/shared";
+import { useSearchParams } from "next/navigation";
+import { EmptyMessage } from "../EmptyMessage";
+import { Media } from "../dashboard/Media";
+import { AlertMessage } from "../ui/alert";
+import { ScrollArea } from "../ui/scroll-area";
+import { Skeleton } from "../ui/skeleton";
 
 export const MediaList = () => {
   const searchParams = useSearchParams();
@@ -43,18 +43,11 @@ export const MediaList = () => {
       />
     );
 
-  if (!media || media.length === 0)
-    return (
-      <div className="mt-16 flex flex-col items-center gap-2">
-        <Ghost className="h-8 w-8 text-zinc-800" />
-        <h3 className="text-xl font-semibold">Pretty empty around here</h3>
-        <p>Let&apos;s upload something new...</p>
-      </div>
-    );
+  if (!media || media.length === 0) return <EmptyMessage />;
 
   return (
     <ScrollArea>
-      <div className="grid auto-rows-[24rem] grid-cols-[repeat(auto-fill,minmax(min(100%,14rem),1fr))] gap-4 pr-3">
+      <div className="grid auto-rows-[24rem] grid-cols-[repeat(auto-fill,minmax(min(100%,14rem),1fr))] gap-4">
         {media.map((media) => (
           <Media media={media} key={media.id + searchParams.toString()} />
         ))}

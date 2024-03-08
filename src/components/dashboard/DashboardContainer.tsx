@@ -9,10 +9,9 @@ export const DashboardContainer = ({
 }) => {
   return (
     <motion.div
-      className="flex flex-1 flex-col gap-5 p-8"
+      className="flex flex-1 grid-cols-1 flex-col gap-5 px-6 py-8 xl:grid-cols-2"
       initial={{ y: 300, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      exit={{ y: 300, opacity: 0 }}
       transition={{
         type: "spring",
         stiffness: 260,

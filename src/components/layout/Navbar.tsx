@@ -1,17 +1,23 @@
 import Link from "next/link";
 
-import { Icons } from "@/components/shared/Icons";
+import { Icons } from "@/components/Icons";
 import { buttonVariants } from "@/components/ui/button";
 import { getSession } from "@/lib/auth";
 import { Suspense } from "react";
-import { ModeToggle } from "../shared/ModeToggle";
-import { Skeleton } from "../shared/Skeleton";
+import { ModeToggle } from "../ModeToggle";
+import { Skeleton } from "../ui/skeleton";
 import { UserAccountNav } from "./UserAccountNav";
 
-export const Navbar = () => {
+type NavbarProps = {
+  hasMaxWidth?: boolean;
+};
+
+export const Navbar = ({ hasMaxWidth = false }: NavbarProps) => {
   return (
     <header className="sticky top-0 flex h-16 w-full justify-center border-b border-gray-200 bg-background/60 backdrop-blur-xl dark:border-gray-700">
-      <div className="container flex items-center justify-between py-4">
+      <div
+        className={`flex items-center justify-between py-4 ${hasMaxWidth ? "container" : "w-full px-4"}`}
+      >
         <div className="flex gap-6 md:gap-10">
           <Link
             href="/"

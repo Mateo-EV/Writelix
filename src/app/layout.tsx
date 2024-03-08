@@ -35,7 +35,6 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className={`${poppins.variable} font-poppins`}>
         <ThemeProvider attribute="class" defaultTheme="light">
-          <Navbar />
           <TRPCReactProvider>
             {/* {authModal} */}
             {children}
