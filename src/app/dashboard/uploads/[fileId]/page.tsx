@@ -30,19 +30,19 @@ export default function FileIdPage({
   params: { fileId: string };
 }) {
   return (
-    <Card className="flex flex-1 animate-fade-up flex-col">
+    <Card className="grid flex-1 animate-fade-up grid-rows-[8fr_1fr]">
       <Suspense
         fallback={
           <Skeleton
-            containerClassName="size-full p-4"
             className="size-full"
+            containerClassName="p-2"
             style={{ lineHeight: "normal" }}
           />
         }
       >
         <FileIdPageContent fileId={fileId} />
       </Suspense>
-      <div className="flex flex-1 items-center gap-2 p-2">
+      <div className="flex items-center gap-2 p-2">
         <Link
           href={"/dashboard/chat/" + fileId}
           className={cn(

@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { useQuery } from "@tanstack/react-query";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -27,10 +26,10 @@ import { toast } from "sonner";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
-import { Skeleton } from "@/components/ui/skeleton";
-import "simplebar-react/dist/simplebar.min.css";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { usePdfBase64 } from "@/lib/fetch";
+import "simplebar-react/dist/simplebar.min.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -64,7 +63,8 @@ export const PdfRenderer = ({ url }: PdfRendererProps) => {
   const { data: pdf, isLoading: isPDFLoading } = usePdfBase64(url);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const { width, ref } = useResizeDetector();
+  const { width, ref: pdfContainerRef } = useResizeDetector();
+  const { height, ref: scrollbarContainerRef } = useResizeDetector();
 
   const [numPages, setNumPages] = useState<number>(0);
   const [currPage, setCurrPage] = useState(1);
@@ -86,15 +86,15 @@ export const PdfRenderer = ({ url }: PdfRendererProps) => {
   if (isPDFLoading)
     return (
       <Skeleton
-        containerClassName="size-full p-4"
         className="size-full"
+        containerClassName="p-2"
         style={{ lineHeight: "normal" }}
       />
     );
 
   return (
-    <>
-      <div className="flex h-14 w-full items-center justify-between border-b px-2">
+    <div className="flex flex-col">
+      <div className="flex h-14 w-full flex-grow-0 items-center justify-between border-b px-2">
         <div className="flex items-center gap-1.5">
           <Button
             aria-label="previous page"
@@ -143,7 +143,8 @@ export const PdfRenderer = ({ url }: PdfRendererProps) => {
             <DropdownMenuTrigger asChild>
               <Button aria-label="zoom" variant="ghost" className="gap-1.5">
                 <SearchIcon className="h-4 w-4" />
-                100% <ChevronDownIcon className="h-3 w-3 opacity-50" />
+                {scale * 100}%{" "}
+                <ChevronDownIcon className="h-3 w-3 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -179,15 +180,18 @@ export const PdfRenderer = ({ url }: PdfRendererProps) => {
         </div>
       </div>
 
-      <div className="w-full max-w-full">
-        <SimpleBar
-          className="max-h-[calc(100vh-26rem)] md:max-h-[calc(100vh-22rem)]"
-          autoHide={false}
-        >
-          <div
-            ref={ref}
-            className="max-h-[calc(100vh-26rem)] md:max-h-[calc(100vh-22rem)]"
-          >
+      {/* <div className="w-full max-w-full flex-1"> */}
+      <SimpleBar
+        className="max-w-full flex-1"
+        style={{ maxHeight: height ?? undefined }}
+        autoHide={false}
+        ref={(ref) => {
+          if (ref?.el && !scrollbarContainerRef.current)
+            scrollbarContainerRef.current = ref.el;
+        }}
+      >
+        {height && (
+          <div ref={pdfContainerRef}>
             <Document
               file={pdf}
               onLoadError={() =>
@@ -219,8 +223,9 @@ export const PdfRenderer = ({ url }: PdfRendererProps) => {
               ))}
             </Document>
           </div>
-        </SimpleBar>
-      </div>
-    </>
+        )}
+      </SimpleBar>
+      {/* </div> */}
+    </div>
   );
 };
