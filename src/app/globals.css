@@ -50,7 +50,7 @@
   }
 }
 
-.theme-custom {
+/* .theme-custom {
   --gradient: #97c4fc;
 
   --background: 227 61.75% 6.32%;
@@ -81,7 +81,7 @@
   --destructive-foreground: 227 9.5% 98.95%;
 
   --ring: 227 95% 79%;
-}
+} */
  
 @layer base {
   * {

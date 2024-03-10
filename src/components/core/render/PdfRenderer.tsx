@@ -27,8 +27,6 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Skeleton } from "@/components/ui/skeleton";
-import { usePdfBase64 } from "@/lib/fetch";
 import "simplebar-react/dist/simplebar.min.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -60,8 +58,6 @@ const PdfFullScreen = ({ url }: PdfRendererProps) => {
 };
 
 export const PdfRenderer = ({ url }: PdfRendererProps) => {
-  const { data: pdf, isLoading: isPDFLoading } = usePdfBase64(url);
-
   const inputRef = useRef<HTMLInputElement>(null);
   const { width, ref: pdfContainerRef } = useResizeDetector();
   const { height, ref: scrollbarContainerRef } = useResizeDetector();
@@ -82,15 +78,6 @@ export const PdfRenderer = ({ url }: PdfRendererProps) => {
   useEffect(() => {
     if (inputRef.current) inputRef.current.value = currPage.toString();
   }, [currPage]);
-
-  if (isPDFLoading)
-    return (
-      <Skeleton
-        className="size-full"
-        containerClassName="p-2"
-        style={{ lineHeight: "normal" }}
-      />
-    );
 
   return (
     <div className="flex flex-col">
@@ -180,7 +167,6 @@ export const PdfRenderer = ({ url }: PdfRendererProps) => {
         </div>
       </div>
 
-      {/* <div className="w-full max-w-full flex-1"> */}
       <SimpleBar
         className="max-w-full flex-1"
         style={{ maxHeight: height ?? undefined }}
@@ -193,7 +179,7 @@ export const PdfRenderer = ({ url }: PdfRendererProps) => {
         {height && (
           <div ref={pdfContainerRef}>
             <Document
-              file={pdf}
+              file={url}
               onLoadError={() =>
                 toast.error("Error loading PDF", {
                   description: "Please try again later",
@@ -225,7 +211,6 @@ export const PdfRenderer = ({ url }: PdfRendererProps) => {
           </div>
         )}
       </SimpleBar>
-      {/* </div> */}
     </div>
   );
 };

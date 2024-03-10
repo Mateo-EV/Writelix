@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -22,4 +23,9 @@ export function formatDateForChat(date: Date) {
 
 export function formatDate(date: Date) {
   return dayjs(date).format("DD/MM/YYYY");
+}
+
+export function formatDurationAudio(seconds: number) {
+  dayjs.extend(duration);
+  return dayjs.duration(seconds * 1000).format("mm:ss");
 }

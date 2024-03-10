@@ -1,10 +1,15 @@
-import { FileRenderer } from "@/components/core/FileRenderer";
+import { AudioRenderer } from "@/components/core/render/AudioRenderer";
+import { PdfRenderer } from "@/components/core/render/PdfRenderer";
+import { WebRenderer } from "@/components/core/render/WebRenderer";
+import { YoutubeRenderer } from "@/components/core/render/YoutubeRenderer";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { STORAGE_URL } from "@/config";
 import { getSession } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { getFileById } from "@/server/api/routers";
+import { FileType } from "@/server/db/schema";
 import { MessageCircleIcon, NotepadTextIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -14,6 +19,13 @@ type FileIdPageContentProps = {
   fileId: string;
 };
 
+const fileRendererContent = (key: string, name: string) => ({
+  [FileType.PDF]: <PdfRenderer url={STORAGE_URL + key} />,
+  [FileType.WEB]: <WebRenderer url={key} />,
+  [FileType.AUDIO]: <AudioRenderer url={STORAGE_URL + key} name={name} />,
+  [FileType.YOUTUBE]: <YoutubeRenderer keyYoutube={key} />,
+});
+
 const FileIdPageContent = async ({ fileId }: FileIdPageContentProps) => {
   const session = (await getSession())!;
 
@@ -21,7 +33,7 @@ const FileIdPageContent = async ({ fileId }: FileIdPageContentProps) => {
 
   if (!file) return notFound();
 
-  return <FileRenderer file={file} />;
+  return fileRendererContent(file.key, file.name)[file.type];
 };
 
 export default function FileIdPage({

@@ -4,9 +4,10 @@ import { FileType } from "@/server/db/schema";
 import { type RouterOutputs } from "@/trpc/shared";
 import { AudioLinesIcon } from "lucide-react";
 import { Icons } from "../Icons";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 type MediaSmallProps = {
   media: RouterOutputs["file"]["getAll"][number];
@@ -31,12 +32,19 @@ const MediaContent = {
 
 export const MediaSmall = ({ media }: MediaSmallProps) => {
   const content = MediaContent[media.type];
+  const pathname = usePathname();
+  const searchParams = useSearchParams().toString();
 
   return (
     <MotionLink
-      href={"/dashboard/uploads/" + media.id}
+      href={
+        "/dashboard/uploads/" + media.id + (searchParams && "?" + searchParams)
+      }
       layout
-      className="flex animate-fade-in items-center justify-between rounded-md p-1 transition-colors hover:bg-secondary"
+      className={cn(
+        "flex animate-fade-in items-center justify-between rounded-md p-1 transition-colors hover:bg-secondary",
+        pathname.includes(media.id) && "bg-secondary",
+      )}
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.8, opacity: 0 }}
     >

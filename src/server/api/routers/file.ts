@@ -5,9 +5,13 @@ import { z } from "zod";
 import { authProcedure, createTRPCRouter } from "../trpc";
 
 export const getFileById = async (fileId: string, userId: string) => {
-  return await db.query.files.findFirst({
-    where: and(eq(files.id, fileId), eq(files.userId, userId)),
-  });
+  try {
+    return await db.query.files.findFirst({
+      where: and(eq(files.id, fileId), eq(files.userId, userId)),
+    });
+  } catch (error) {
+    return null
+  }
 };
 
 export const fileRouter = createTRPCRouter({
