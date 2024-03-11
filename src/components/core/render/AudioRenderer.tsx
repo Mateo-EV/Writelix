@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
 import { formatDurationAudio } from "@/lib/utils";
 import { PauseIcon, PlayIcon, Volume2Icon, VolumeXIcon } from "lucide-react";
@@ -22,6 +23,7 @@ export const AudioRenderer = ({ url, name }: AudioRendererProps) => {
   const { height, ref: waveContainerRef } = useResizeDetector();
 
   const [isPlaying, setIsPlaying] = useState(false);
+  // const [isLoading, setIsLoading] = useState(true);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [duration, setDuration] = useState(0);
