@@ -1,7 +1,8 @@
 import { type User } from "@/server/db/schema";
 import { type AvatarProps } from "@radix-ui/react-avatar";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { UserIcon } from "lucide-react";
+import Image from "next/image";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 type UserAvatarProps = AvatarProps & {
   user: Pick<User, "image" | "name">;
@@ -10,10 +11,11 @@ type UserAvatarProps = AvatarProps & {
 export const UserAvatar = ({ user, ...props }: UserAvatarProps) => {
   return (
     <Avatar {...props}>
-      <AvatarImage
+      <Image
         alt="user-picture"
         src={user.image ?? ""}
-        referrerPolicy="no-referrer"
+        fill
+        className="aspect-square h-full w-full"
       />
       {!user.image && (
         <AvatarFallback>

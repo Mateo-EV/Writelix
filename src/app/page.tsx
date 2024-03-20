@@ -16,7 +16,7 @@ export default async function Home() {
               lineHeight: 1.25,
             }}
           >
-            Empower your studies with AI now using{" "}
+            Empower your writing skills with AI now using{" "}
             <span className="font-extrabold text-primary">WriteLix</span>
           </h1>
           <p

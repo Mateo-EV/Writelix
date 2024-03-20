@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertMessage } from "@/components/ui/alert";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -19,17 +20,32 @@ export const YoutubePreview = ({
 }: YoutubePreviewProps) => {
   const urlImage = `https://img.youtube.com/vi/${keyYoutube}/maxresdefault.jpg`;
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   return (
     <>
       {isLoading && <LoadingSpinner />}
+      {isError && (
+        <AlertMessage
+          type="destructive"
+          title="Not found"
+          description="It seems this youtube video doesn't exists"
+        />
+      )}
       <Image
         src={urlImage}
         alt="youtube-video"
         fill
-        onLoad={() => setIsLoading(false)}
+        onLoad={() => {
+          setIsLoading(false);
+          setIsError(false);
+        }}
+        onError={() => {
+          setIsLoading(false);
+          setIsError(true);
+        }}
         className={cn("size-full object-cover", className)}
-        style={{ opacity: isLoading ? "0" : "1" }}
+        style={{ opacity: isLoading || isError ? "0" : "1" }}
         {...props}
       />
     </>

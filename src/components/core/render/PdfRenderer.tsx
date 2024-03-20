@@ -23,9 +23,6 @@ import { useResizeDetector } from "react-resize-detector";
 import SimpleBar from "simplebar-react";
 import { toast } from "sonner";
 
-import "react-pdf/dist/Page/AnnotationLayer.css";
-import "react-pdf/dist/Page/TextLayer.css";
-
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import "simplebar-react/dist/simplebar.min.css";
 
@@ -81,7 +78,7 @@ export const PdfRenderer = ({ url }: PdfRendererProps) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex h-14 w-full flex-grow-0 items-center justify-between border-b px-2">
+      <div className="flex h-14 w-full flex-grow-0 items-center justify-between border-b bg-zinc-100 px-2 dark:bg-transparent">
         <div className="flex items-center gap-1.5">
           <Button
             aria-label="previous page"

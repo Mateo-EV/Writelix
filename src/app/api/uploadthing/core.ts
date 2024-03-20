@@ -1,8 +1,16 @@
+import { env } from "@/env";
+import { pc } from "@/lib/pinecone";
 import { auth } from "@/server/auth";
 import { db } from "@/server/db";
 import { files, FileStatus, FileType } from "@/server/db/schema";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
+import { UploadThingError, UTApi } from "uploadthing/server";
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import { STORAGE_URL } from "@/config";
+import { PineconeStore } from "@langchain/pinecone";
+
+export const utapi = new UTApi();
 
 const f = createUploadthing();
 
@@ -36,11 +44,51 @@ const onUploadComplete = async ({
       key: file.key,
       userId,
     })
-    .returning({ id: files.id });
+    .returning({ id: files.id, createdAt: files.createdAt, name: files.name });
 
   if (!fileDB) throw new UploadThingError("Something went wrong");
 
-  return { fileId: fileDB.id };
+  void manageFileUploaded({
+    fileId: fileDB.id,
+    fileKey: file.key,
+    fileType: type,
+  });
+
+  return { ...fileDB, type, createdAt: fileDB.createdAt.toUTCString() };
+};
+
+export const manageFileUploaded = async ({
+  fileId,
+  fileKey,
+  fileType,
+}: {
+  fileId: string;
+  fileKey: string;
+  fileType: FileType;
+}) => {
+  console.log("hi");
+
+  const fileUrl = STORAGE_URL + fileKey;
+  const request = await fetch(fileUrl);
+
+  const fileBlob = await request.blob();
+  const loader = new PDFLoader(fileBlob);
+  const pageLevelDocs = await loader.load();
+
+  const pineconeIndex = pc.Index(env.PINECONE_INDEX);
+  const embeddings = new OpenAIEmbeddings({
+    openAIApiKey: env.OPENAI_API_KEY,
+  });
+
+  try {
+    await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
+      pineconeIndex,
+      namespace: fileId,
+    });
+    await db.update(files).set({ status: FileStatus.SUCCESS });
+  } catch {
+    await db.update(files).set({ status: FileStatus.FAILED });
+  }
 };
 
 export const ourFileRouter = {

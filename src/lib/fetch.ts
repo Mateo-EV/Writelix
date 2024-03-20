@@ -9,12 +9,3 @@ export const useLogoFromUrl = (url: string) => {
     queryKey: ["logoFromUrl", url],
   });
 };
-
-// export const usePdfBase64 = (url: string) => {
-//   return useQuery({
-//     queryKey: ["renderPDF", url],
-//     queryFn: () => {
-//       return
-//     },
-//   });
-// };

@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import { auth } from "./server/auth";
+import { ratelimit } from "./lib/redis";
 
-export default auth((req) => {
+export default auth(async (req) => {
+  const ip = req.ip ?? "127.0.0.1";
+  const { success } = await ratelimit.limit(ip);
+
+  if (!success)
+    return NextResponse.json("Rate limit exceeded", { status: 429 });
+
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
 

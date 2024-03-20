@@ -8,6 +8,7 @@ import { MediaSmall } from "./MediaSmall";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
 import { ScrollArea } from "../ui/scroll-area";
+import DeleteUploadModal from "../modals/DeleteUploadModal";
 
 export const UploadList = () => {
   const searchParams = useSearchParams();
@@ -18,9 +19,7 @@ export const UploadList = () => {
     data: files,
     isLoading,
     isError,
-  } = api.file.getAll.useQuery(undefined, {
-    keepPreviousData: true,
-  });
+  } = api.file.getAll.useQuery(undefined);
 
   if (isError)
     return <AlertMessage type="destructive" title="Something went wrong" />;
@@ -42,14 +41,17 @@ export const UploadList = () => {
   if (!filesFiltered || filesFiltered.length === 0) return <EmptyMessage />;
 
   return (
-    <ScrollArea className="flex-1">
-      <div className="flex flex-col gap-4">
-        <AnimatePresence mode="popLayout">
-          {filesFiltered.map((file) => (
-            <MediaSmall key={file.id} media={file} />
-          ))}
-        </AnimatePresence>
-      </div>
-    </ScrollArea>
+    <>
+      <ScrollArea className="flex-1">
+        <div className="flex flex-col gap-4">
+          <AnimatePresence mode="popLayout">
+            {filesFiltered.map((file) => (
+              <MediaSmall key={file.id} media={file} />
+            ))}
+          </AnimatePresence>
+        </div>
+      </ScrollArea>
+      <DeleteUploadModal />
+    </>
   );
 };

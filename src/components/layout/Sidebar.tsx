@@ -101,7 +101,7 @@ export const Sidebar = () => {
     );
 
   return (
-    <div className="hidden basis-[250px] px-4 lg:block">
+    <div className="hidden basis-[250px] border-r px-4 lg:block">
       {sidebarItemsRender}
     </div>
   );

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
-import { formatDurationAudio } from "@/lib/utils";
+import { cn, formatDurationAudio } from "@/lib/utils";
 import { PauseIcon, PlayIcon, Volume2Icon, VolumeXIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
@@ -23,7 +23,7 @@ export const AudioRenderer = ({ url, name }: AudioRendererProps) => {
   const { height, ref: waveContainerRef } = useResizeDetector();
 
   const [isPlaying, setIsPlaying] = useState(false);
-  // const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -51,6 +51,7 @@ export const AudioRenderer = ({ url, name }: AudioRendererProps) => {
     });
 
     function onReadyListener() {
+      setIsLoading(false);
       setVolume(waveSurfer.current!.getVolume());
       setDuration(waveSurfer.current!.getDuration());
     }
@@ -89,7 +90,16 @@ export const AudioRenderer = ({ url, name }: AudioRendererProps) => {
       waveSurfer.current?.un("timeupdate", onTimeUpdate);
       waveSurfer.current?.destroy();
     };
-  }, [height, url, theme]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [height, url]);
+
+  useEffect(() => {
+    if (waveSurfer.current) {
+      waveSurfer.current.setOptions({
+        waveColor: theme === "light" ? "hsla(213 14% 60%)" : "hsla(213 1% 83%)",
+      });
+    }
+  }, [theme]);
 
   const handlePlayPause = () => void waveSurfer.current?.playPause();
 
@@ -104,11 +114,23 @@ export const AudioRenderer = ({ url, name }: AudioRendererProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-10 p-2">
+    <div className="relative flex flex-col gap-10 p-2">
       <p className="mt-4 text-center text-xl font-semibold">{name}</p>
-      <div className="flex-1" ref={waveContainerRef}>
+      <div
+        className={cn(
+          "flex-1 transition-opacity duration-700",
+          isLoading ? "opacity-0" : "opacity-100",
+        )}
+        ref={waveContainerRef}
+      >
         <div ref={waveFormRef} />
       </div>
+      {isLoading && (
+        <Skeleton
+          containerClassName="absolute top-[88px] left-2 right-2"
+          height={height}
+        />
+      )}
       <div className="flex justify-between">
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={handlePlayPause}>

@@ -37,24 +37,24 @@ const main = async () => {
 
   await db.delete(schema.files);
   await db.delete(schema.documentations);
-  for (let i = 0; i < 10; i++) {
-    const type = faker.helpers.enumValue(schema.FileType);
-    documentationsSeeded.push({
-      userId: user!.id,
-      title: faker.lorem.sentence(3),
-      content: faker.lorem.text(),
-    });
-    filesSeeded.push({
-      type,
-      key: posibleData[type][0],
-      name: posibleData[type][1],
-      status: faker.helpers.enumValue(schema.FileStatus),
-      userId: user!.id,
-    });
-  }
+  // for (let i = 0; i < 10; i++) {
+  //   const type = faker.helpers.enumValue(schema.FileType);
+  //   documentationsSeeded.push({
+  //     userId: user!.id,
+  //     title: faker.lorem.sentence(3),
+  //     content: faker.lorem.text(),
+  //   });
+  //   filesSeeded.push({
+  //     type,
+  //     key: posibleData[type][0],
+  //     name: posibleData[type][1],
+  //     status: faker.helpers.enumValue(schema.FileStatus),
+  //     userId: user!.id,
+  //   });
+  // }
 
-  // await db.insert(schema.documentations).values(documentationsSeeded);
-  await db.insert(schema.files).values(filesSeeded);
+  // // await db.insert(schema.documentations).values(documentationsSeeded);
+  // await db.insert(schema.files).values(filesSeeded);
   console.log("Seed done");
 };
 

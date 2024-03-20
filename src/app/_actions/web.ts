@@ -30,7 +30,11 @@ export const getLogoFromUrl = async (url: string) => {
   });
 
   const link = filteredLinks[0]?.getAttribute("href");
-  const urlImage = link ? urlFormatted.origin + link : null;
+  const urlImage = link
+    ? link.startsWith("http")
+      ? link
+      : urlFormatted.origin + link
+    : null;
 
   return {
     urlImage,

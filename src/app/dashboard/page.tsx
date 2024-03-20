@@ -15,7 +15,6 @@ export default function DasboardPage() {
         heading="Dashboard"
         text="Welcome, what're the plans for today?"
       />
-
       <MediaFilters />
       <SearchBar placeholder="Search media..." />
       <MediaList />

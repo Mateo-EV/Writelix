@@ -232,10 +232,12 @@ export const messages = pgTable("message", {
   id: uuid("id").defaultRandom().primaryKey(),
   content: text("content").notNull(),
 
-  isIAMessage: boolean("message_from_ia").notNull(),
-  fileId: uuid("file_id").references(() => files.id),
+  response: text("response").notNull(),
+  fileId: uuid("file_id")
+    .references(() => files.id, { onDelete: "cascade", onUpdate: "cascade" })
+    .notNull(),
 
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const messagesRelations = relations(messages, ({ one }) => ({

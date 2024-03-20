@@ -12,6 +12,7 @@ import { ZodError } from "zod";
 
 import { db } from "@/server/db";
 import { auth } from "../auth";
+import { ratelimit } from "@/lib/redis";
 
 /**
  * 1. CONTEXT
@@ -25,7 +26,10 @@ import { auth } from "../auth";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
+export const createTRPCContext = async (opts: {
+  headers: Headers;
+  ip?: string;
+}) => {
   return {
     db,
     ...opts,
@@ -74,7 +78,16 @@ export const createTRPCRouter = t.router;
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure;
+export const publicProcedure = t.procedure.use(
+  t.middleware(async ({ ctx, next }) => {
+    const ip = ctx.ip ?? "127.0.0.1";
+    const { success } = await ratelimit.limit(ip);
+
+    if (!success) throw new TRPCError({ code: "UNAUTHORIZED" });
+
+    return next();
+  }),
+);
 
 const authMiddleware = t.middleware(async ({ next }) => {
   const session = await auth();

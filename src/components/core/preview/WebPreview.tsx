@@ -7,7 +7,7 @@ import { Icons } from "../../Icons";
 import { cn } from "@/lib/utils";
 
 type WebPreviewProps = {
-  className: string;
+  className?: string;
   url: string;
   // type?: "full" | "icon";
 };

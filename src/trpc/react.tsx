@@ -36,6 +36,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
           queries: {
             staleTime: Infinity,
             cacheTime: Infinity,
+            refetchOnWindowFocus: false,
           },
         },
       }),

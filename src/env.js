@@ -19,8 +19,14 @@ export const env = createEnv({
       .default("development"),
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_SECRET_ID: z.string(),
+    GOOGLE_API_KEY: z.string(),
     AUTH_SECRET: z.string(),
     RESEND_API_KEY: z.string(),
+    PINECONE_API_KEY: z.string(),
+    PINECONE_INDEX: z.string(),
+    OPENAI_API_KEY: z.string(),
+    UPSTASH_REDIS_REST_URL: z.string(),
+    UPSTASH_REDIS_REST_TOKEN: z.string()
   },
 
   /**
@@ -41,8 +47,14 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_SECRET_ID: process.env.GOOGLE_SECRET_ID,
+    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
     AUTH_SECRET: process.env.AUTH_SECRET,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
+    PINECONE_API_KEY: process.env.PINECONE_API_KEY,
+    PINECONE_INDEX: process.env.PINECONE_INDEX,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
