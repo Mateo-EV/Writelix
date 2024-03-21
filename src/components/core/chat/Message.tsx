@@ -1,6 +1,8 @@
 import { cn, formatDateForChat } from "@/lib/utils";
 import { BotIcon, UserIcon } from "lucide-react";
 import { forwardRef } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type MessageProps = {
   message: {
@@ -40,14 +42,19 @@ export const Message = forwardRef<HTMLDivElement, MessageProps>(
         >
           <div
             className={cn(
-              "inline-block rounded-lg px-4 py-2",
+              "inline-block basis-full rounded-lg px-4 py-2",
               message.isIAMessage
                 ? "rounded-bl-none bg-gray-200 text-gray-900"
                 : "rounded-br-none bg-primary dark:bg-gray-900",
             )}
           >
             {typeof message.content === "string" ? (
-              <p>{message.content}</p>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                className="react-markdown-table"
+              >
+                {message.content}
+              </ReactMarkdown>
             ) : (
               message.content
             )}

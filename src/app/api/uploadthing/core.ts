@@ -6,9 +6,12 @@ import { files, FileStatus, FileType } from "@/server/db/schema";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError, UTApi } from "uploadthing/server";
 import { OpenAIEmbeddings } from "@langchain/openai";
+import { toFile } from "openai";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { STORAGE_URL } from "@/config";
 import { PineconeStore } from "@langchain/pinecone";
+import { openai } from "@/lib/openai";
+import { Document } from "@langchain/core/documents";
 
 export const utapi = new UTApi();
 
@@ -40,7 +43,7 @@ const onUploadComplete = async ({
     .values({
       name: file.name.replace(/\.[^/.]+$/, ""),
       type,
-      status: FileStatus.PENDING,
+      status: FileStatus.PROCESSING,
       key: file.key,
       userId,
     })
@@ -57,6 +60,27 @@ const onUploadComplete = async ({
   return { ...fileDB, type, createdAt: fileDB.createdAt.toUTCString() };
 };
 
+const loadFile = {
+  [FileType.PDF]: async (blob: Blob) => await new PDFLoader(blob).load(),
+  [FileType.AUDIO]: async (blob: Blob) => {
+    const file = await toFile(blob, "tmp.mp3", { type: "mp3" });
+
+    const transcriptionResponse = await openai.audio.transcriptions.create({
+      file,
+      model: "whisper-1",
+    });
+
+    const document = new Document({
+      pageContent: transcriptionResponse.text,
+      metadata: { soruce: "blob", blobType: blob.type },
+    });
+
+    return [document];
+  },
+  [FileType.WEB]: async (blob: Blob) => await new PDFLoader(blob).load(),
+  [FileType.YOUTUBE]: async (blob: Blob) => await new PDFLoader(blob).load(),
+};
+
 export const manageFileUploaded = async ({
   fileId,
   fileKey,
@@ -66,14 +90,11 @@ export const manageFileUploaded = async ({
   fileKey: string;
   fileType: FileType;
 }) => {
-  console.log("hi");
-
   const fileUrl = STORAGE_URL + fileKey;
   const request = await fetch(fileUrl);
 
   const fileBlob = await request.blob();
-  const loader = new PDFLoader(fileBlob);
-  const pageLevelDocs = await loader.load();
+  const pageLevelDocs = await loadFile[fileType](fileBlob);
 
   const pineconeIndex = pc.Index(env.PINECONE_INDEX);
   const embeddings = new OpenAIEmbeddings({

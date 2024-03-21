@@ -3,7 +3,7 @@ import { pc } from "@/lib/pinecone";
 import { getFileById } from "@/server/api/routers";
 import { auth } from "@/server/auth";
 import { db } from "@/server/db";
-import { messages } from "@/server/db/schema";
+import { FileType, messages } from "@/server/db/schema";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { PineconeStore } from "@langchain/pinecone";
 import { desc, eq } from "drizzle-orm";
@@ -64,13 +64,30 @@ export const POST = async (req: NextRequest) => {
     messages: [
       {
         role: "system",
-        content: `Use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format.
-            \nIf you don't know the answer, just say that you don't know, don't try to make up an answer.
-            \nCONTEXT:
-            ${results.map((r) => r.pageContent).join("\n\n")}`,
+        content:
+          `Use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format.
+            \nIf you don't know the answer, just say that you don't know, don't try to make up an answer. Keep in mind that this is the content of a ${file.type} file
+            ${file.type === FileType.PDF ? "Mention the page number of the pdf file in this format (p.)" : ""}
+            \nCONTEXT:\n` +
+          results
+            .map((r) => {
+              const numberPage = r.metadata["loc.pageNumber"] as
+                | number
+                | undefined;
+              const pageNumberExists = typeof numberPage === "number";
+
+              if (pageNumberExists)
+                return `*[Page Number: ${numberPage}]*\n ${r.pageContent}\n`;
+
+              return r.pageContent;
+            })
+            .join("\n\n"),
       },
       ...formattedMessages,
-      { role: "user", content: message },
+      {
+        role: "user",
+        content: message,
+      },
     ],
   });
 

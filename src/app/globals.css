@@ -110,3 +110,12 @@
 .scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
   border-radius: 7px;
 }
+
+.react-markdown-table table, .react-markdown-table th, .react-markdown-table td {
+  border: 1px solid #000000;
+}
+.react-markdown-table table {
+  text-align: center;
+  border-radius: 1rem;
+  margin: .5rem;
+}
