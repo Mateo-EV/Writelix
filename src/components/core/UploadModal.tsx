@@ -82,10 +82,10 @@ const UploadDropzone = ({ type }: UploadDropzoneProps) => {
           void globalApi.home.getFilesAndDocumentation.refetch();
         }, 500);
       },
-      onUploadError: () => {
+      onUploadError: (err) => {
         clearInterval(intervalRef.current);
         setIsUploading(false);
-        toast.error("Something went wrong");
+        toast.error(err.message);
       },
       onBeforeUploadBegin: (files) => {
         setIsUploading(true);

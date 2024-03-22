@@ -11,7 +11,10 @@ import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { STORAGE_URL } from "@/config";
 import { PineconeStore } from "@langchain/pinecone";
 import { openai } from "@/lib/openai";
-import { Document } from "@langchain/core/documents";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { PuppeteerWebBaseLoader } from "langchain/document_loaders/web/puppeteer";
+import { YoutubeLoader } from "langchain/document_loaders/web/youtube";
+import { redis } from "@/lib/redis";
 
 export const utapi = new UTApi();
 
@@ -21,6 +24,16 @@ const authMiddleware = async (type: FileType.PDF | FileType.AUDIO) => {
   const session = await auth();
 
   if (!session) throw new UploadThingError("Unauthorized");
+
+  const isInProcess = await redis.get(`isInProcess:${session.user.id}`);
+
+  if (isInProcess)
+    throw new UploadThingError({
+      code: "FILE_LIMIT_EXCEEDED",
+      message: "You'are processing something right now",
+    });
+
+  await redis.set(`isInProcess:${session.user.id}`, true);
 
   return { userId: session.user.id, type };
 };
@@ -55,46 +68,73 @@ const onUploadComplete = async ({
     fileId: fileDB.id,
     fileKey: file.key,
     fileType: type,
+    userId,
   });
 
   return { ...fileDB, type, createdAt: fileDB.createdAt.toUTCString() };
 };
 
 const loadFile = {
-  [FileType.PDF]: async (blob: Blob) => await new PDFLoader(blob).load(),
-  [FileType.AUDIO]: async (blob: Blob) => {
-    const file = await toFile(blob, "tmp.mp3", { type: "mp3" });
+  [FileType.PDF]: async (fileKey: string) => {
+    const fileUrl = STORAGE_URL + fileKey;
+    const request = await fetch(fileUrl);
+
+    const fileBlob = await request.blob();
+    return await new PDFLoader(fileBlob).load();
+  },
+  [FileType.AUDIO]: async (fileKey: string) => {
+    const fileUrl = STORAGE_URL + fileKey;
+    const request = await fetch(fileUrl);
+
+    const fileBlob = await request.blob();
+    const file = await toFile(fileBlob, "tmp.mp3", { type: "mp3" });
 
     const transcriptionResponse = await openai.audio.transcriptions.create({
       file,
       model: "whisper-1",
     });
 
-    const document = new Document({
-      pageContent: transcriptionResponse.text,
-      metadata: { soruce: "blob", blobType: blob.type },
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 2000,
+      chunkOverlap: 1,
     });
 
-    return [document];
+    return await splitter.createDocuments(
+      [transcriptionResponse.text],
+      [{ soruce: "blob", blobType: fileBlob.type }],
+    );
   },
-  [FileType.WEB]: async (blob: Blob) => await new PDFLoader(blob).load(),
-  [FileType.YOUTUBE]: async (blob: Blob) => await new PDFLoader(blob).load(),
+  [FileType.WEB]: async (fileKey: string) =>
+    await new PuppeteerWebBaseLoader(fileKey, {
+      async evaluate(page, browser) {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        const result = await page.evaluate(() => document.body.innerText);
+        await browser.close();
+        return result;
+      },
+    }).load(),
+  [FileType.YOUTUBE]: async (fileKey: string) => {
+    const youtubeLoader = new YoutubeLoader({
+      videoId: fileKey,
+      addVideoInfo: true,
+    });
+
+    return await youtubeLoader.load();
+  },
 };
 
 export const manageFileUploaded = async ({
   fileId,
   fileKey,
   fileType,
+  userId,
 }: {
   fileId: string;
   fileKey: string;
   fileType: FileType;
+  userId: string;
 }) => {
-  const fileUrl = STORAGE_URL + fileKey;
-  const request = await fetch(fileUrl);
-
-  const fileBlob = await request.blob();
-  const pageLevelDocs = await loadFile[fileType](fileBlob);
+  const pageLevelDocs = await loadFile[fileType](fileKey);
 
   const pineconeIndex = pc.Index(env.PINECONE_INDEX);
   const embeddings = new OpenAIEmbeddings({
@@ -110,6 +150,8 @@ export const manageFileUploaded = async ({
   } catch {
     await db.update(files).set({ status: FileStatus.FAILED });
   }
+
+  await redis.del(`isInProcess:${userId}`);
 };
 
 export const ourFileRouter = {

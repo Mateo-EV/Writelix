@@ -18,9 +18,13 @@ export const YoutubePreview = ({
   className,
   ...props
 }: YoutubePreviewProps) => {
-  const urlImage = `https://img.youtube.com/vi/${keyYoutube}/maxresdefault.jpg`;
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+  const [quality, setQuality] = useState<"maxresdefault" | "hqdefault">(
+    "maxresdefault",
+  );
+
+  const urlImage = `https://img.youtube.com/vi/${keyYoutube}/${quality}.jpg`;
 
   return (
     <>
@@ -41,8 +45,12 @@ export const YoutubePreview = ({
           setIsError(false);
         }}
         onError={() => {
-          setIsLoading(false);
-          setIsError(true);
+          if (quality === "maxresdefault") {
+            setQuality("hqdefault");
+          } else if (quality === "hqdefault") {
+            setIsLoading(false);
+            setIsError(true);
+          }
         }}
         className={cn("size-full object-cover", className)}
         style={{ opacity: isLoading || isError ? "0" : "1" }}

@@ -33,7 +33,7 @@ export const ChatWrapper = ({ fileId }: ChatWrapperProps) => {
             <LoadingSpinner className="size-8 text-primary" />
             <h3 className="text-xl font-semibold">Loading...</h3>
             <p className="text-sm text-zinc-500">
-              We&apos;re preparing your PDF.
+              We&apos;re preparing your file.
             </p>
           </div>
         </div>
@@ -47,7 +47,7 @@ export const ChatWrapper = ({ fileId }: ChatWrapperProps) => {
         <div className="mb-28 flex flex-1 flex-col items-center justify-center">
           <div className="flex flex-col items-center gap-2">
             <LoadingSpinner className="size-8 text-primary" />
-            <h3 className="text-xl font-semibold">Processing PDF...</h3>
+            <h3 className="text-xl font-semibold">Processing data...</h3>
             <p className="text-sm text-zinc-500">This won&apos;t take long.</p>
           </div>
         </div>

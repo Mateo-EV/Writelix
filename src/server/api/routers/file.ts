@@ -1,4 +1,4 @@
-import { utapi } from "@/app/api/uploadthing/core";
+import { manageFileUploaded, utapi } from "@/app/api/uploadthing/core";
 import { INFINITE_QUERY_LIMIT } from "@/config";
 import { env } from "@/env";
 import { pc } from "@/lib/pinecone";
@@ -10,6 +10,7 @@ import { TRPCError } from "@trpc/server";
 import { and, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { authProcedure, createTRPCRouter } from "../trpc";
+import { redis } from "@/lib/redis";
 
 export const getFileById = async (fileId: string, userId: string) => {
   try {
@@ -44,6 +45,16 @@ export const fileRouter = createTRPCRouter({
   uploadUrl: authProcedure
     .input(uploadUrlFileSchema)
     .mutation(async ({ ctx, input: { url: key, type, name } }) => {
+      const isInProcess = await redis.get(`isInProcess:${ctx.session.user.id}`);
+
+      if (isInProcess)
+        throw new TRPCError({
+          code: "TOO_MANY_REQUESTS",
+          message: "You'are processing something right now",
+        });
+
+      await redis.set(`isInProcess:${ctx.session.user.id}`, true);
+
       if (type === FileType.YOUTUBE) {
         const videoData = await getYoutubeVideoByKey(key);
 
@@ -60,7 +71,7 @@ export const fileRouter = createTRPCRouter({
           name,
           key,
           type,
-          status: FileStatus.PENDING,
+          status: FileStatus.PROCESSING,
           userId: ctx.session.user.id,
         })
         .returning({
@@ -71,6 +82,14 @@ export const fileRouter = createTRPCRouter({
         });
 
       if (!newFile) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+
+      void manageFileUploaded({
+        fileId: newFile.id,
+        fileKey: key,
+        fileType: type,
+        userId: ctx.session.user.id,
+      });
+
       return { file: newFile, message: "File uploaded successfully" };
     }),
   getFileStatus: authProcedure

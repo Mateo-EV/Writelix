@@ -8,6 +8,7 @@ import { Icons } from "../Icons";
 import { YoutubePreview } from "../core/preview/YoutubePreview";
 import AudioImage from "@/assets/Audio-Default.jpg";
 import CreationImage from "@/assets/Creation-Default.jpg";
+import Link from "next/link";
 
 type MediaProps = {
   media: RouterOutputs["home"]["getFilesAndDocumentation"][number];
@@ -60,8 +61,8 @@ export const Media = ({ media }: MediaProps) => {
   const content = MediaContent[media.type];
 
   return (
-    <div
-      tabIndex={0}
+    <Link
+      href={"/dashboard/uploads/" + media.id}
       className="flex cursor-pointer flex-col gap-2 rounded-md border bg-card p-2 outline-none transition ease-in hover:shadow-md"
     >
       <div className="relative grid flex-1 place-items-center overflow-hidden rounded-md">
@@ -73,6 +74,6 @@ export const Media = ({ media }: MediaProps) => {
           {media.title}
         </span>
       </div>
-    </div>
+    </Link>
   );
 };
