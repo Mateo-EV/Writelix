@@ -235,7 +235,7 @@ const UploadUrl = ({ type }: UploadUrlProps) => {
           </ButtonWithLoading>
         </form>
       </Form>
-      <div className="relative grid flex-1 place-items-center overflow-hidden rounded-md p-2">
+      <div className="relative flex flex-1 items-center justify-center overflow-hidden rounded-md p-2">
         {form.formState.isValid ? (
           type === FileType.YOUTUBE ? (
             <YoutubePreview

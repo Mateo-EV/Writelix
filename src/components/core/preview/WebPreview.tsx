@@ -43,10 +43,10 @@ export const WebPreview = ({
         {data.urlImage && (
           <img src={data.urlImage} alt="logo-web" className="size-6" />
         )}
-        <p className="text-sm font-semibold text-muted-foreground">
+        <p className="max-w-full break-words text-sm font-semibold text-muted-foreground">
           {data.title}
         </p>
-        <p className="text-xs">{data.description}</p>
+        <p className="max-w-full break-words text-xs">{data.description}</p>
       </div>
     );
   }

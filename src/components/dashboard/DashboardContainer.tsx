@@ -13,8 +13,8 @@ export const DashboardContainer = ({
   return (
     <motion.div
       className={cn("flex flex-1 flex-col gap-5 px-6 py-8", className)}
-      initial={{ y: 300, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
+      animate={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
       transition={{
         type: "spring",
         stiffness: 260,

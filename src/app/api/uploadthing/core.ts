@@ -104,12 +104,27 @@ const loadFile = {
       [{ soruce: "blob", blobType: fileBlob.type }],
     );
   },
-  [FileType.WEB]: async (fileKey: string) =>
+  [FileType.WEB]: async (fileKey: string, fileId: string) =>
     await new PuppeteerWebBaseLoader(fileKey, {
       async evaluate(page, browser) {
         await new Promise((resolve) => setTimeout(resolve, 5000));
         const result = await page.evaluate(() => document.body.innerText);
+        const base64 = await page.screenshot({
+          type: "png",
+          encoding: "binary",
+        });
+
+        const file = new File([base64], `sc.png`);
+
+        Object.defineProperty(file, "customId", {
+          value: fileId,
+          writable: false,
+        });
+
+        await utapi.uploadFiles(file);
+
         await browser.close();
+
         return result;
       },
     }).load(),
@@ -134,14 +149,14 @@ export const manageFileUploaded = async ({
   fileType: FileType;
   userId: string;
 }) => {
-  const pageLevelDocs = await loadFile[fileType](fileKey);
-
-  const pineconeIndex = pc.Index(env.PINECONE_INDEX);
-  const embeddings = new OpenAIEmbeddings({
-    openAIApiKey: env.OPENAI_API_KEY,
-  });
-
   try {
+    const pageLevelDocs = await loadFile[fileType](fileKey, fileId);
+
+    const pineconeIndex = pc.Index(env.PINECONE_INDEX);
+    const embeddings = new OpenAIEmbeddings({
+      openAIApiKey: env.OPENAI_API_KEY,
+    });
+
     await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
       pineconeIndex,
       namespace: fileId,

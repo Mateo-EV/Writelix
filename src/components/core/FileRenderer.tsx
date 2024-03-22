@@ -12,9 +12,9 @@ type FileRendererProps = {
   fileId: string;
 };
 
-const fileRendererContent = (key: string, name: string) => ({
+const fileRendererContent = (key: string, name: string, id: string) => ({
   [FileType.PDF]: <PdfRenderer url={STORAGE_URL + key} />,
-  [FileType.WEB]: <WebRenderer url={key} />,
+  [FileType.WEB]: <WebRenderer fileId={id} />,
   [FileType.AUDIO]: <AudioRenderer url={STORAGE_URL + key} name={name} />,
   [FileType.YOUTUBE]: <YoutubeRenderer keyYoutube={key} />,
 });
@@ -26,5 +26,5 @@ export const FileRenderer = async ({ fileId }: FileRendererProps) => {
 
   if (!file) return notFound();
 
-  return fileRendererContent(file.key, file.name)[file.type];
+  return fileRendererContent(file.key, file.name, file.id)[file.type];
 };

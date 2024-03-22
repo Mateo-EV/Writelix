@@ -1,6 +1,7 @@
 "use server";
 
 import { JSDOM } from "jsdom";
+import { utapi } from "../api/uploadthing/core";
 
 export const getLogoFromUrl = async (url: string) => {
   if (url.length == 0) return null;
@@ -47,4 +48,12 @@ export const getLogoFromUrl = async (url: string) => {
         .querySelector("meta[property='og//:description']")
         ?.getAttribute("content"),
   };
+};
+
+export const getUrlFromFileId = async (fileId: string) => {
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  const [file] = await utapi.getFileUrls(fileId, { keyType: "customId" });
+
+  return file?.url;
 };

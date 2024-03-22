@@ -115,7 +115,14 @@ export const fileRouter = createTRPCRouter({
           message: "Something went wrong",
         });
 
-      void utapi.deleteFiles(fileDeleted.key);
+      if (fileDeleted.type === FileType.WEB)
+        void utapi.deleteFiles(fileDeleted.id, { keyType: "customId" });
+      else if (
+        fileDeleted.type === FileType.PDF ||
+        fileDeleted.type === FileType.AUDIO
+      )
+        void utapi.deleteFiles(fileDeleted.key);
+
       void pc.index(env.PINECONE_INDEX).namespace(fileDeleted.id).deleteAll();
     }),
   getMessages: authProcedure

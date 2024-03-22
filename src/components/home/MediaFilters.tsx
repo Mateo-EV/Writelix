@@ -45,7 +45,7 @@ export const MediaFilters = () => {
   };
 
   return (
-    <div className="space-x-4">
+    <div className="flex flex-wrap gap-x-4 gap-y-3">
       {filters.map(({ content, type }) => (
         <Link
           key={content}
