@@ -101,13 +101,13 @@ const UploadDropzone = ({ type }: UploadDropzoneProps) => {
       multiple={false}
       maxSize={4000000}
       onDropAccepted={(acceptedFile) => void startUpload(acceptedFile)}
-      onDropRejected={() => toast.error("Max size exceeded for upload")}
+      onDropRejected={(e) => toast.error(e[0]?.errors[0]?.message)}
       accept={
         type === FileType.PDF
           ? {
               "application/pdf": [".pdf"],
             }
-          : { "audio/*": [] }
+          : { "audio/*": [], "video/*": [] }
       }
     >
       {({ getRootProps, acceptedFiles }) => (
